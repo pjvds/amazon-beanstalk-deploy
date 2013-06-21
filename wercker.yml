@@ -1,0 +1,29 @@
+box: wercker/default
+deploy:
+  steps:
+    - script:
+        name: Install packages
+        code: |-
+          sudo apt-get update
+          sudo apt-get install unzip
+    - script:
+        name: Install Beanstalk CLI
+        script: |-
+          wget --quiet https://s3.amazonaws.com/elasticbeanstalk/cli/AWS-ElasticBeanstalk-CLI-2.4.0.zip
+          unzip -qq AWS-ElasticBeanstalk-CLI-2.4.0.zip
+          mkdir -p /usr/local/aws/elasticbeanstalk
+          mv AWS-ElasticBeanstalk-CLI-2.4.0/* /usr/local/aws/elasticbeanstalk/
+          echo "PATH=/usr/local/aws/elasticbeanstalk/eb/linux/python2.7:$PATH" > ~/.bashrc
+          mkdir -p $HOME/.aws-default/
+          source ~/.bashrc
+    - create-file:
+        name: Create robots.txt
+        filename: $HOME/.aws-default/aws-credentials.json
+        content: |-
+            {
+              "access-id": "<insert your AWS access id here>",
+              "private-key": "<insert your AWS secret access key here>",
+            }
+    - script:
+        name: Beanstalk there?
+        script: eb status
