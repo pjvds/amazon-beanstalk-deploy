@@ -50,4 +50,4 @@ deploy:
         name: Push it!
         code: |-
           git checkout master
-          eb push
+          eb push master
