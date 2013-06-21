@@ -47,7 +47,16 @@ deploy:
         name: Beanstalk there?
         code: eb status
     - script:
+        name: Create deploy repository
+        code: |-
+          rm -rf $WERCKER_SOURCE_DIR/.git
+          echo ".elasticbeanstalk/" > .gitignore
+          git init
+          git add .
+          git commit -m "deploy commit"
+          sudo bash /usr/local/aws/elasticbeanstalk/AWSDevTools/Linux/AWSDevTools-RepositorySetup.sh
+    - script:
         name: Push it!
         code: |-
           git checkout master
-          eb push master
+          git aws.push
