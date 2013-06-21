@@ -38,3 +38,6 @@ deploy:
     - script:
         name: Beanstalk there?
         code: eb status
+    - script:
+        name: Push it!
+        code: eb push
