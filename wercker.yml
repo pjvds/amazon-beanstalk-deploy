@@ -30,9 +30,9 @@ deploy:
         filename: $WERCKER_SOURCE_DIR/.elasticbeanstalk/config
         content: |-
           [global]
-          ApplicationName=melp
+          ApplicationName=php-hello-world
           DevToolsEndpoint=git.elasticbeanstalk.us-east-1.amazonaws.com
-          EnvironmentName=melp-env
+          EnvironmentName=wercker
           Region=us-east-1
           ServiceEndpoint=https://elasticbeanstalk.us-east-1.amazonaws.com
     - script:
