@@ -48,4 +48,6 @@ deploy:
         code: eb status
     - script:
         name: Push it!
-        code: eb push
+        code: |-
+          git checkout master
+          eb push
