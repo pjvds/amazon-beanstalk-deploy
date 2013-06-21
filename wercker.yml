@@ -35,6 +35,14 @@ deploy:
           EnvironmentName=wercker
           Region=us-east-1
           ServiceEndpoint=https://elasticbeanstalk.us-east-1.amazonaws.com
+
+          [branches]
+          master=wercker
+
+          [branch:master]
+          ApplicationVersionName=master
+          EnvironmentName=wercker
+          InstanceProfileName=aws-elasticbeanstalk-ec2-role
     - script:
         name: Beanstalk there?
         code: eb status
