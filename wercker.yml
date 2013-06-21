@@ -14,8 +14,8 @@ deploy:
           sudo mkdir -p /usr/local/aws/elasticbeanstalk
           sudo mv AWS-ElasticBeanstalk-CLI-2.4.0/* /usr/local/aws/elasticbeanstalk/
           echo "PATH=/usr/local/aws/elasticbeanstalk/eb/linux/python2.7:$PATH" > ~/.bashrc
-          echo "export AWS_CREDENTIAL_FILE=\"$HOME/.aws-default/aws-credentials.json\"" >> ~/.bashrc
-          mkdir -p $HOME/.aws-default/
+          echo "export AWS_CREDENTIAL_FILE=\"/home/ubuntu/.elasticbeanstalk/aws_credential_file\"" >> ~/.bashrc
+          mkdir -p "/home/ubuntu/.elasticbeanstalk/"
           source ~/.bashrc
     - create-file:
         name: Create robots.txt
