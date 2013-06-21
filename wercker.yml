@@ -16,6 +16,8 @@ deploy:
           echo "PATH=/usr/local/aws/elasticbeanstalk/eb/linux/python2.7:$PATH" > ~/.bashrc
           echo "export AWS_CREDENTIAL_FILE=\"/home/ubuntu/.elasticbeanstalk/aws_credential_file\"" >> ~/.bashrc
           mkdir -p "/home/ubuntu/.elasticbeanstalk/"
+          mkdir -p "$WERCKER_SOURCE_DIR/.elasticbeanstalk/"
+
           source ~/.bashrc
     - create-file:
         name: Create AWS credential file
@@ -23,6 +25,16 @@ deploy:
         content: |-
             AWSAccessKeyId=$KEY
             AWSSecretKey=$SECRET_KEY
+    - create-file:
+        name: Add beanstalk config
+        filename: $WERCKER_SOURCE_DIR/.elasticbeanstalk/config
+        content: |-
+          [global]
+          ApplicationName=melp
+          DevToolsEndpoint=git.elasticbeanstalk.us-east-1.amazonaws.com
+          EnvironmentName=melp-env
+          Region=us-east-1
+          ServiceEndpoint=https://elasticbeanstalk.us-east-1.amazonaws.com
     - script:
         name: Beanstalk there?
         code: eb status
