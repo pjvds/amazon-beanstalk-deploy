@@ -18,13 +18,11 @@ deploy:
           mkdir -p "/home/ubuntu/.elasticbeanstalk/"
           source ~/.bashrc
     - create-file:
-        name: Create robots.txt
+        name: Create AWS credential file
         filename: $AWS_CREDENTIAL_FILE
         content: |-
-            {
-              'access-id': 'foo',
-              'private-key': 'bar',
-            }
+            AWSAccessKeyId=$KEY
+            AWSSecretKey=$SECRET_KEY
     - script:
         name: Beanstalk there?
         code: eb status
