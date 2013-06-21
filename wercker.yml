@@ -21,8 +21,8 @@ deploy:
         filename: $HOME/.aws-default/aws-credentials.json
         content: |-
             {
-              "access-id": "<insert your AWS access id here>",
-              "private-key": "<insert your AWS secret access key here>",
+              'access-id': 'foo',
+              'private-key': 'bar',
             }
     - script:
         name: Beanstalk there?
