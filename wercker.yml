@@ -26,4 +26,4 @@ deploy:
             }
     - script:
         name: Beanstalk there?
-        script: eb status
+        code: eb status
