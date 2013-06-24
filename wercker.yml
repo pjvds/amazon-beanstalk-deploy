@@ -1,11 +1,9 @@
 box: wercker/default
 deploy:
   steps:
-    - script:
-        name: Install packages
-        code: |-
-          sudo apt-get update -qq
-          sudo apt-get install unzip -qq
+    - install-packages:
+        packages: unzip
+
     - script:
         name: Install Beanstalk CLI
         code: |-
@@ -13,18 +11,24 @@ deploy:
           unzip -qq AWS-ElasticBeanstalk-CLI-2.4.0.zip
           sudo mkdir -p /usr/local/aws/elasticbeanstalk
           sudo mv AWS-ElasticBeanstalk-CLI-2.4.0/* /usr/local/aws/elasticbeanstalk/
-          echo "PATH=/usr/local/aws/elasticbeanstalk/eb/linux/python2.7:$PATH" > ~/.bashrc
-          echo "export AWS_CREDENTIAL_FILE=\"/home/ubuntu/.elasticbeanstalk/aws_credential_file\"" >> ~/.bashrc
+          export PATH="/usr/local/aws/elasticbeanstalk/eb/linux/python2.7:$PATH"
+          export AWS_CREDENTIAL_FILE="/home/ubuntu/.elasticbeanstalk/aws_credential_file"
           mkdir -p "/home/ubuntu/.elasticbeanstalk/"
           mkdir -p "$WERCKER_SOURCE_DIR/.elasticbeanstalk/"
 
-          source ~/.bashrc
+    # Store the key and secret key in the the aws_credential_file
+    # This key and secret_key must be set as environment variable
+    # in your deploy target.
     - create-file:
         name: Create AWS credential file
         filename: $AWS_CREDENTIAL_FILE
         content: |-
             AWSAccessKeyId=$KEY
             AWSSecretKey=$SECRET_KEY
+
+    # I'm not sure which information is mendatory, I've copied
+    # the full content from the config file on my local dev machine
+    # after a "eb init".
     - create-file:
         name: Add beanstalk config
         filename: $WERCKER_SOURCE_DIR/.elasticbeanstalk/config
@@ -35,17 +39,22 @@ deploy:
           EnvironmentName=wercker
           Region=us-east-1
           ServiceEndpoint=https://elasticbeanstalk.us-east-1.amazonaws.com
-
           [branches]
           master=wercker
-
           [branch:master]
           ApplicationVersionName=master
           EnvironmentName=wercker
           InstanceProfileName=aws-elasticbeanstalk-ec2-role
+
+    # Check if beanstalk CLI is there
     - script:
         name: Beanstalk there?
         code: eb status
+
+    # Remove the existing repository and re-add everything
+    # in a new repository that will be used to push it to beanstalk
+    # The last line in this script add the beanstalk hooks to the
+    # repository
     - script:
         name: Create deploy repository
         code: |-
@@ -58,6 +67,8 @@ deploy:
           git add .
           git commit -m "deploy commit"
           sudo bash /usr/local/aws/elasticbeanstalk/AWSDevTools/Linux/AWSDevTools-RepositorySetup.sh
+
+    # Do the actual deploy via the aws.push hook that the Beanstalk CLI adds
     - script:
         name: Push it!
         code: |-
